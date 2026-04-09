@@ -23,6 +23,9 @@ export default function App() {
     degreeMatrix,
     laplacianMatrix,
     eigenvalues,
+    eigenvectors,
+    lambdaMatrix,
+    zeroEigenIndices,
     zeroEigenvalueCount,
     clusterMap,
     clusterCount,
@@ -120,6 +123,9 @@ export default function App() {
           laplacianMatrix={laplacianMatrix}
           laplacianPowerMatrix={laplacianPowerMatrix}
           eigenvalues={eigenvalues}
+          eigenvectors={eigenvectors}
+          lambdaMatrix={lambdaMatrix}
+          zeroEigenIndices={zeroEigenIndices}
           zeroEigenvalueCount={zeroEigenvalueCount}
           clusterCount={clusterCount}
           showClusters={showClusters}

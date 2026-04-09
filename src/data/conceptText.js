@@ -47,11 +47,12 @@ export const conceptText = {
   
     Spectral: {
       title: "Spectral Clustering",
-      body: "This step will use eigenvalues and eigenvectors of the Laplacian matrix to identify clusters in the graph.",
+      body: "This step decomposes the Laplacian matrix into UΛUᵀ to reveal cluster structure in the graph.",
       bullets: [
-        "Zero eigenvalues correspond to connected components.",
-        "Eigenvectors contain cluster membership clues.",
-        "This reveals graph structure through linear algebra.",
+        "Λ is the diagonal matrix of eigenvalues.",
+        "Zero eigenvalues indicate the number of connected components.",
+        "U contains the eigenvectors of the Laplacian.",
+        "Nodes with the same row pattern in the selected eigenvector columns belong to the same cluster.",
       ],
       showTryCard: false,
     },
@@ -61,7 +62,7 @@ export const conceptText = {
       body: "Select a node to see how its influence spreads through the graph as k increases.",
       bullets: [
         "L reflects how each node is connected to its neighbours.",
-        "Raising L to higher powers (L², L³, ...) captures influence over longer paths.",
+        "Raising L to higher powers (L², L³, ...) captures influence over longer paths — nodes up to k steps away in the graph.",
         "This helps motivate graph convolution ideas.",
       ],
       showTryCard: false,

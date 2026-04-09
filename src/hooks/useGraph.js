@@ -1,7 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 
 const CLUSTER_COLORS = [
-  "#14b8a6",
   "#3b82f6",
   "#a855f7",
   "#f59e0b",
@@ -24,12 +23,30 @@ export function getClusterColor(index) {
   return `hsl(${hue}, 65%, 55%)`;
 }
 
-function computeEigenvaluesSymmetric(matrix) {
+function identityMatrix(n) {
+  return Array.from({ length: n }, (_, i) =>
+    Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))
+  );
+}
+
+function computeEigendecompositionSymmetric(matrix) {
   const n = matrix.length;
-  if (n === 0) return [];
-  if (n === 1) return [matrix[0][0]];
+  if (n === 0) {
+    return {
+      eigenvalues: [],
+      eigenvectors: [],
+    };
+  }
+
+  if (n === 1) {
+    return {
+      eigenvalues: [matrix[0][0]],
+      eigenvectors: [[1]],
+    };
+  }
 
   const A = matrix.map((row) => [...row]);
+  const V = identityMatrix(n);
   const maxIterations = 100;
 
   for (let iter = 0; iter < maxIterations; iter++) {
@@ -54,7 +71,9 @@ function computeEigenvaluesSymmetric(matrix) {
     const apq = A[p][q];
 
     const theta =
-      app === aqq ? Math.PI / 4 : 0.5 * Math.atan((2 * apq) / (aqq - app));
+      Math.abs(app - aqq) < 1e-12
+        ? Math.PI / 4
+        : 0.5 * Math.atan((2 * apq) / (aqq - app));
 
     const c = Math.cos(theta);
     const s = Math.sin(theta);
@@ -63,8 +82,10 @@ function computeEigenvaluesSymmetric(matrix) {
       if (i !== p && i !== q) {
         const aip = A[i][p];
         const aiq = A[i][q];
+
         A[i][p] = c * aip - s * aiq;
         A[p][i] = A[i][p];
+
         A[i][q] = s * aip + c * aiq;
         A[q][i] = A[i][q];
       }
@@ -74,9 +95,34 @@ function computeEigenvaluesSymmetric(matrix) {
     A[q][q] = s * s * app + 2 * s * c * apq + c * c * aqq;
     A[p][q] = 0;
     A[q][p] = 0;
+
+    // accumulate eigenvectors
+    for (let i = 0; i < n; i++) {
+      const vip = V[i][p];
+      const viq = V[i][q];
+
+      V[i][p] = c * vip - s * viq;
+      V[i][q] = s * vip + c * viq;
+    }
   }
 
-  return A.map((row, i) => Math.max(0, row[i])).sort((a, b) => a - b);
+  const pairs = Array.from({ length: n }, (_, i) => ({
+    value: Math.abs(A[i][i]) < 1e-10 ? 0 : A[i][i],
+    vector: V.map((row) => row[i]), // column i of V
+  })).sort((a, b) => a.value - b.value);
+
+  const eigenvalues = pairs.map((pair) => Math.max(0, pair.value));
+
+  // return as row-by-node matrix:
+  // rows = nodes, cols = eigenvectors
+  const eigenvectors = Array.from({ length: n }, (_, rowIndex) =>
+    Array.from({ length: n }, (_, colIndex) => pairs[colIndex].vector[rowIndex])
+  );
+
+  return {
+    eigenvalues,
+    eigenvectors,
+  };
 }
 
 export function useGraph() {
@@ -289,30 +335,30 @@ export function useGraph() {
             case "four-clusters": {
               const clusterNodes = [
                 // cluster 1
-                { id: "n1", x: 200, y: 110, label: "1" },
-                { id: "n2", x: 310, y: 190, label: "2" },
-                { id: "n3", x: 265, y: 310, label: "3" },
-                { id: "n4", x: 135, y: 310, label: "4" },
-                { id: "n5", x: 90, y: 190, label: "5" },
-                { id: "n6", x: 200, y: 210, label: "6" }, 
+                { id: "n1", x: 220, y: 110, label: "1" },
+                { id: "n2", x: 330, y: 190, label: "2" },
+                { id: "n3", x: 285, y: 310, label: "3" },
+                { id: "n4", x: 155, y: 310, label: "4" },
+                { id: "n5", x: 110, y: 190, label: "5" },
+                { id: "n6", x: 220, y: 210, label: "6" }, 
             
                 // cluster 2
-                { id: "n7", x: 720, y: 110, label: "7" },
-                { id: "n8", x: 840, y: 210, label: "8" },
-                { id: "n9", x: 720, y: 310, label: "9" },
-                { id: "n10", x: 600, y: 210, label: "10" },
+                { id: "n7", x: 670, y: 90, label: "7" },
+                { id: "n8", x: 790, y: 190, label: "8" },
+                { id: "n9", x: 670, y: 290, label: "9" },
+                { id: "n10", x: 550, y: 190, label: "10" },
             
                 // cluster 3
-                { id: "n11", x: 120, y: 520, label: "11" },
-                { id: "n12", x: 240, y: 600, label: "12" },
-                { id: "n13", x: 360, y: 520, label: "13" },
+                { id: "n11", x: 120, y: 490, label: "11" },
+                { id: "n12", x: 240, y: 570, label: "12" },
+                { id: "n13", x: 360, y: 490, label: "13" },
             
                 // cluster 4
-                { id: "n14", x: 700, y: 450, label: "14" },
-                { id: "n15", x: 820, y: 510, label: "15" },
-                { id: "n16", x: 780, y: 630, label: "16" },
-                { id: "n17", x: 620, y: 630, label: "17" },
-                { id: "n18", x: 700, y: 570, label: "18" },
+                { id: "n14", x: 650, y: 420, label: "14" },
+                { id: "n15", x: 770, y: 480, label: "15" },
+                { id: "n16", x: 730, y: 600, label: "16" },
+                { id: "n17", x: 570, y: 600, label: "17" },
+                { id: "n18", x: 650, y: 540, label: "18" },
               ];
             
               const clusterEdges = [
@@ -420,13 +466,25 @@ export function useGraph() {
     );
   }, [degreeMatrix, adjacencyMatrix, nodes.length]);
 
-  const eigenvalues = useMemo(() => {
-    return computeEigenvaluesSymmetric(laplacianMatrix);
+  const { eigenvalues, eigenvectors } = useMemo(() => {
+    return computeEigendecompositionSymmetric(laplacianMatrix);
   }, [laplacianMatrix]);
 
-  const zeroEigenvalueCount = useMemo(() => {
-    return eigenvalues.filter((value) => Math.abs(value) < 1e-6).length;
+  const lambdaMatrix = useMemo(() => {
+    return eigenvalues.map((value, rowIndex) =>
+      eigenvalues.map((_, colIndex) => (rowIndex === colIndex ? value : 0))
+    );
   }, [eigenvalues]);
+
+  const zeroEigenIndices = useMemo(() => {
+    return eigenvalues
+      .map((value, index) => (Math.abs(value) < 1e-6 ? index : -1))
+      .filter((index) => index !== -1);
+  }, [eigenvalues]);
+
+  const zeroEigenvalueCount = useMemo(() => {
+    return zeroEigenIndices.length;
+  }, [zeroEigenIndices]);
 
   const clusterMap = useMemo(() => {
     const visited = new Set();
@@ -471,11 +529,6 @@ export function useGraph() {
 
   const [influenceSource, setInfluenceSource] = useState(null);
   const [influenceK, setInfluenceK] = useState(1);
-
-  const identityMatrix = (n) =>
-    Array.from({ length: n }, (_, i) =>
-      Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))
-    );
   
   const multiplyMatrices = (A, B) => {
     const rows = A.length;
@@ -571,6 +624,9 @@ export function useGraph() {
     degreeMatrix,
     laplacianMatrix,
     eigenvalues,
+    eigenvectors,
+    lambdaMatrix,
+    zeroEigenIndices,
     zeroEigenvalueCount,
     clusterMap,
     clusterCount,

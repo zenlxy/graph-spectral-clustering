@@ -332,90 +332,86 @@
   }
 
   .matrix-wrapper {
-    overflow-x: auto;
-    padding-top: 6px;
+    overflow-x: auto;   
+    overflow-y: hidden;
+    max-width: 100%;
   }
   
   .matrix-table {
-    width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    width: max-content;   
     table-layout: fixed;
   }
   
   .matrix-table th,
   .matrix-table td {
     text-align: center;
-    min-width: 28px;
+    width: 72px;
     padding: 4px;
     border: 1px solid #e2e8f0;
     font-family: monospace;
     font-size: 0.95rem;
   }
   
-  .matrix-index-cell {
-    color: #94a3b8;
-    font-weight: 600;
+  .matrix-corner-cell {
+    position: sticky;
+    left: 0;
+    z-index: 3;
     background: #f8fafc;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    width: 64px;
+    min-width: 64px;
+    max-width: 64px;
+    border: 1px solid #e2e8f0;
   }
   
+  .matrix-header-cell {
+    background: #f8fafc;
+    color: #94a3b8;
+    font-weight: 600;
+    width: 72px;
+    padding: 6px 8px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .matrix-index-cell {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #f8fafc;
+    color: #94a3b8;
+    font-weight: 600;
+    width: 64px;
+    padding: 6px 8px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    white-space: nowrap;
+  }
+
   .matrix-cell {
     background: white;
     color: #0f172a;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    position: relative;
   }
   
   .matrix-cell-value {
     position: relative;
     cursor: default;
   }
-
-.matrix-cell {
-  position: relative;
-  overflow: visible;   
-}
-
-.matrix-cell-text {
-  display: block;
-  overflow: hidden;   
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  cursor: default;
-}
-
-.matrix-cell-text:hover::after {
-  content: attr(data-full-value);
-  position: absolute;
-  left: 50%;
-  top: -32px;
-  transform: translateX(-50%);
-  background: #0f172a;
-  color: #fff;
-  padding: 6px 8px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-  z-index: 1000;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.18);
-  pointer-events: none;
-}
-
-.matrix-cell-text:hover::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -8px;
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: #0f172a;
-  z-index: 1000;
-  pointer-events: none;
-}
+    
+  .matrix-cell-text {
+    display: block;
+    overflow: hidden;   
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: default;
+  }
 
   .matrix-cell-adjacency-active {
     background: rgba(20, 184, 166, 0.18);
@@ -438,6 +434,17 @@
   .matrix-cell-laplacian-negative {
     background: rgba(20, 184, 166, 0.18);
     color: #0f172a;
+    font-weight: 700;
+  }
+
+  .matrix-cell-spectral-highlight {
+    background: rgba(20, 184, 166, 0.18);
+    font-weight: 700;
+  }
+  
+  .matrix-index-cell.highlighted-col {
+    background: rgba(20, 184, 166, 0.12);
+    color: #0f766e;
     font-weight: 700;
   }
   

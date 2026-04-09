@@ -11,6 +11,9 @@ export default function RightPanel({
   laplacianMatrix,
   laplacianPowerMatrix,
   eigenvalues,
+  eigenvectors,
+  lambdaMatrix,
+  zeroEigenIndices,
   zeroEigenvalueCount,
   clusterCount,
   showClusters,
@@ -23,6 +26,9 @@ export default function RightPanel({
   setInfluenceK,
 }) {
   const content = conceptText[activeStep];
+
+  const eigenvectorLabels = eigenvalues.map((_, index) => `u${index + 1}`);
+  const lambdaLabels = eigenvalues.map((_, index) => `λ${index + 1}`);
 
   const getMatrixType = () => {
     if (activeStep === "Adjacency") return "adjacency";
@@ -99,61 +105,79 @@ export default function RightPanel({
         )}
 
         {activeStep === "Spectral" && (
-        <>
+          <>
+
             <div className="content-card">
-            <h3>Computed Eigenvalues</h3>
-            <div className="eigenvalue-list">
-                {eigenvalues.map((value, index) => {
-                const isZero = Math.abs(value) < 1e-6;
-                return (
-                    <div
-                    key={index}
-                    className={`eigenvalue-pill ${isZero ? "zero" : ""}`}
-                    >
-                    λ{index + 1} = {value.toFixed(4)}
-                    </div>
-                );
-                })}
+              <h3>Eigenvalue Matrix (Λ)</h3>
+              <p>
+                Λ is the diagonal matrix of eigenvalues. Zero diagonal entries
+                indicate connected components.
+              </p>
+              <MatrixView
+                matrix={lambdaMatrix}
+                type="lambda"
+                labels={lambdaLabels}
+                rowLabels={lambdaLabels}
+                highlightCols={zeroEigenIndices}
+              />
             </div>
+
+            <div className="content-card">
+              <h3>Eigenvector Matrix (U)</h3>
+              <p>
+                Each column of U is an eigenvector. The highlighted columns corresponding to
+                zero eigenvalues are the key columns used to identify clusters. Nodes that belong 
+                to the same cluster will have the same values in these highlighted columns.
+              </p>
+              <MatrixView
+                matrix={eigenvectors}
+                type="spectral"
+                labels={eigenvectorLabels}
+                rowLabels={nodeLabels}
+                highlightCols={zeroEigenIndices}
+              />
+              <p>
+              <em>(May have slight variations due to numerical precision.)</em>
+              </p>
             </div>
 
             <div className="spectral-summary-card">
-            <div className="spectral-summary-top">
+              <div className="spectral-summary-top">
                 <div>
-                <h3 className="spectral-summary-title">
+                  <h3 className="spectral-summary-title">
                     Connected Components:{" "}
                     <span className="spectral-highlight-number">{clusterCount}</span>
-                </h3>
+                  </h3>
 
-                <p className="spectral-summary-subtext">
+                  <p className="spectral-summary-subtext">
                     Zero eigenvalues:{" "}
                     <span className="spectral-inline-highlight">
-                    {zeroEigenvalueCount}
+                      {zeroEigenvalueCount}
                     </span>
-                </p>
+                  </p>
                 </div>
 
                 <button
-                className="cluster-action-btn"
-                onClick={() => setShowClusters((prev) => !prev)}
+                  className="cluster-action-btn"
+                  onClick={() => setShowClusters((prev) => !prev)}
                 >
-                {showClusters ? "Hide Clusters" : "Color Clusters"}
+                  {showClusters ? "Hide Clusters" : "Color Clusters"}
                 </button>
-            </div>
+              </div>
 
-            <div className="cluster-legend">
+              <div className="cluster-legend">
                 {Array.from({ length: clusterCount }, (_, index) => (
-                <div key={index} className="cluster-legend-item">
+                  <div key={index} className="cluster-legend-item">
                     <span
-                    className="cluster-legend-dot"
-                    style={{ backgroundColor: getClusterLegendColor(index) }}
+                      className="cluster-legend-dot"
+                      style={{ backgroundColor: getClusterLegendColor(index) }}
                     />
                     <span>Cluster {index + 1}</span>
-                </div>
+                  </div>
                 ))}
+              </div>
             </div>
-            </div>
-        </>
+          </>
         )}
 
         {activeStep === "Lᵏ Influence" && (
