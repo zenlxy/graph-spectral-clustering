@@ -9,12 +9,20 @@ export default function RightPanel({
   adjacencyMatrix,
   degreeMatrix,
   laplacianMatrix,
+  laplacianPowerMatrix,
   eigenvalues,
   zeroEigenvalueCount,
   clusterCount,
   showClusters,
   setShowClusters,
   nodeLabels,
+  nodes,
+  clusterMap,
+  influenceSource,
+  setInfluenceSource,
+  influenceK,
+  setInfluenceK,
+  influenceMap,
 }) {
   const content = conceptText[activeStep];
 
@@ -26,6 +34,11 @@ export default function RightPanel({
   };
 
   const getClusterLegendColor = (index) => getClusterColor(index);
+
+  const selectedClusterColor =
+  influenceSource && clusterMap.has(influenceSource)
+    ? getClusterColor(clusterMap.get(influenceSource))
+    : "#14b8a6";
 
   return (
     <div className="right-panel-light">
@@ -143,6 +156,44 @@ export default function RightPanel({
             </div>
             </div>
         </>
+        )}
+
+        {activeStep === "Lᵏ Influence" && (
+          <>
+            <div className="content-card">
+              <h3>Lᵏ Controls</h3>
+
+              <div className="influence-controls influence-controls-vertical">
+                <p className="selected-source-text">
+                  <strong>Selected source:</strong>{" "}
+                  {nodes.find((n) => n.id === influenceSource)?.label ?? "Click a node"}
+                </p>
+
+                <label className="influence-control-group influence-slider-group">
+                  <span>k = {influenceK}</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max={Math.max(0, nodes.length || 0)}
+                    step="1"
+                    value={influenceK}
+                    onChange={(e) => setInfluenceK(Number(e.target.value))}
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className="content-card">
+              <h3>Lᵏ Matrix</h3>
+              <MatrixView
+                matrix={laplacianPowerMatrix}
+                type="influence"
+                labels={nodeLabels}
+                selectedRowIndex={nodes.findIndex((n) => n.id === influenceSource)}
+                selectedRowColor={selectedClusterColor}
+              />
+            </div>
+          </>
         )}
 
         <div className="nav-row">

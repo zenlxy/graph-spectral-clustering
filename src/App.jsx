@@ -28,6 +28,12 @@ export default function App() {
     clusterCount,
     showClusters,
     setShowClusters,
+    influenceSource,
+    setInfluenceSource,
+    influenceK,
+    setInfluenceK,
+    laplacianPowerMatrix,
+    influenceMap,
   } = useGraph();
 
   const [activeStep, setActiveStep] = useState("Basics");
@@ -39,6 +45,15 @@ export default function App() {
   };
 
   const nodeLabels = nodes.map((node) => node.label);
+
+  const handleNodeClick = (nodeId) => {
+    if (activeStep === "Lᵏ Influence") {
+      setInfluenceSource(nodeId);
+      return;
+    }
+  
+    handleNodeAction(nodeId);
+  };
 
   return (
     <div className="app-shell-light">
@@ -69,26 +84,37 @@ export default function App() {
             clusterMap={clusterMap}
             showClusters={showClusters}
             onCanvasClick={handleCanvasClick}
-            onNodeClick={handleNodeAction}
+            onNodeClick={handleNodeClick}
             onNodeDrag={moveNode}
             onDeleteEdge={deleteEdge}
+            influenceSource={influenceSource}
+            influenceMap={influenceMap}
+            showInfluence={activeStep === "Lᵏ Influence"}
           />
         </section>
 
         <section className="info-panel">
-          <RightPanel
-            activeStep={activeStep}
-            onChangeStep={setActiveStep}
-            adjacencyMatrix={adjacencyMatrix}
-            degreeMatrix={degreeMatrix}
-            laplacianMatrix={laplacianMatrix}
-            eigenvalues={eigenvalues}
-            zeroEigenvalueCount={zeroEigenvalueCount}
-            clusterCount={clusterCount}
-            showClusters={showClusters}
-            setShowClusters={setShowClusters}
-            nodeLabels={nodeLabels}
-          />
+        <RightPanel
+          activeStep={activeStep}
+          onChangeStep={setActiveStep}
+          adjacencyMatrix={adjacencyMatrix}
+          degreeMatrix={degreeMatrix}
+          laplacianMatrix={laplacianMatrix}
+          laplacianPowerMatrix={laplacianPowerMatrix}
+          eigenvalues={eigenvalues}
+          zeroEigenvalueCount={zeroEigenvalueCount}
+          clusterCount={clusterCount}
+          showClusters={showClusters}
+          setShowClusters={setShowClusters}
+          nodeLabels={nodes.map((n) => n.label)}
+          nodes={nodes}
+          influenceSource={influenceSource}
+          setInfluenceSource={setInfluenceSource}
+          influenceK={influenceK}
+          setInfluenceK={setInfluenceK}
+          influenceMap={influenceMap}
+          clusterMap={clusterMap}
+        />
         </section>
       </main>
     </div>

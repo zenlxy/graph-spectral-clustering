@@ -55,8 +55,8 @@ export default function ControlToolbar({
           Circle
         </button>
 
-        <button className="toolbar-chip" onClick={() => onLoadPreset("three-clusters")}>
-          Three Clusters
+        <button className="toolbar-chip" onClick={() => onLoadPreset("cluster-chain")}>
+          Cluster Chain
         </button>
 
         <button className="toolbar-chip" onClick={() => onLoadPreset("path")}>
@@ -66,6 +66,11 @@ export default function ControlToolbar({
         <button className="toolbar-chip" onClick={() => onLoadPreset("snowflake")}>
           Snowflake
         </button>
+
+        <button className="toolbar-chip" onClick={() => onLoadPreset("four-clusters")}>
+          Four Clusters
+        </button>
+
       </div>
     </div>
   );

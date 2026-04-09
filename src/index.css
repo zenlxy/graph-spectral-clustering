@@ -23,6 +23,9 @@
     min-height: 100vh;
     padding: 20px;
     background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
   
   .topbar-light {
@@ -140,10 +143,18 @@
     color: white;
     box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.18);
   }
-  
+
+
   .graph-canvas-card {
-    flex: 1;
+    position: relative;
+    height: 100%;
+    border-radius: 24px;
     overflow: hidden;
+    background-color: #f8fafc;
+    background-image:
+      linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+      linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+    background-size: 40px 40px;
   }
   
   .graph-svg {
@@ -332,13 +343,67 @@
     color: #94a3b8;
     font-weight: 600;
     background: #f8fafc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   .matrix-cell {
     background: white;
     color: #0f172a;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
   
+  .matrix-cell-value {
+    position: relative;
+    cursor: default;
+  }
+
+.matrix-cell {
+  position: relative;
+  overflow: visible;   /* allow tooltip to appear outside cell */
+}
+
+.matrix-cell-text {
+  display: block;
+  overflow: hidden;    /* clips the text so it doesn't spill into other cells */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.matrix-cell-text:hover::after {
+  content: attr(data-full-value);
+  position: absolute;
+  left: 50%;
+  top: -38px;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 1000;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.18);
+  pointer-events: none;
+}
+
+.matrix-cell-text:hover::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #0f172a;
+  z-index: 1000;
+  pointer-events: none;
+}
+
   .matrix-cell-adjacency-active {
     background: rgba(20, 184, 166, 0.18);
     color: #0f172a;
@@ -445,6 +510,57 @@
     border: 2px solid rgba(15, 23, 42, 0.08);
   }
   
+  .influence-controls {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  
+  .influence-control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 140px;
+  }
+  
+  .influence-control-group select,
+  .influence-control-group input {
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 14px;
+    background: white;
+  }
+
+  .influence-controls-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .selected-source-text {
+    margin: 0;
+  }
+  
+  .influence-slider-group {
+    width: 100%;
+  }
+  
+  .influence-slider-group input[type="range"] {
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .matrix-cell-influence-row {
+    background-color: #ede9fe;
+  }
+  
+  .matrix-cell-influence-active {
+    background-color: #c4b5fd;
+    font-weight: 700;
+  }
+
   @media (max-width: 1200px) {
     .workspace {
       grid-template-columns: 1fr;

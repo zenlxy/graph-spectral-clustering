@@ -56,8 +56,8 @@ export const conceptText = {
       showTryCard: false,
     },
   
-    "L^k Influence": {
-      title: "L^k Influence Explorer",
+    "Lᵏ Influence": {
+      title: "Lᵏ Influence Explorer",
       body: "This step explores how the influence of a node expands across the graph as k increases.",
       bullets: [
         "L captures local structure.",
