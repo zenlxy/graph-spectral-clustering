@@ -216,7 +216,7 @@ export default function GraphCanvas({
                   cy={node.y}
                   r={34}
                   fill="none"
-                  stroke={isEdgeStart ? "#14b8a6" : "#f59e0b"}
+                  stroke="#14b8a6"
                   strokeWidth="3"
                 />
               )}

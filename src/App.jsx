@@ -10,9 +10,10 @@ export default function App() {
     nodes,
     edges,
     selectedNode,
+    clearSelectedNode,
     toolMode,
     edgeStart,
-    setToolMode,
+    changeToolMode,
     reset,
     loadPreset,
     addNode,
@@ -43,15 +44,15 @@ export default function App() {
 
   useEffect(() => {
     if (activeStep === "Lᵏ Influence") {
-      setToolMode("select");
+      changeToolMode("select");
     }
-  }, [activeStep, setToolMode]);
+  }, [activeStep, changeToolMode]);
 
   const handleStepChange = (nextStep) => {
     if (activeStep === "Lᵏ Influence" && nextStep !== "Lᵏ Influence") {
-      setToolMode("add-node");
+      changeToolMode("add-node");
     } else if (nextStep === "Lᵏ Influence") {
-      setToolMode("select");
+      changeToolMode("select");
     }
   
     setActiveStep(nextStep);
@@ -63,6 +64,11 @@ export default function App() {
     if (toolMode === "add-node") {
       addNode(x, y);
     }
+
+    if (toolMode === "select") {
+      clearSelectedNode();
+    }
+
   };
 
   const nodeLabels = nodes.map((node) => node.label);
@@ -91,7 +97,7 @@ export default function App() {
         <section className="canvas-panel">
           <ControlToolbar
             toolMode={toolMode}
-            onSetTool={setToolMode}
+            onSetTool={changeToolMode}
             onLoadPreset={loadPreset}
             onReset={reset}
           />

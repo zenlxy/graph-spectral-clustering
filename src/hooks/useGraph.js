@@ -129,6 +129,7 @@ export function useGraph() {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [selectedNode, setSelectedNode] = useState(null);
+  const clearSelectedNode = () => setSelectedNode(null);
   const [toolMode, setToolMode] = useState("add-node");
   const [edgeStart, setEdgeStart] = useState(null);
   const [nextId, setNextId] = useState(1);
@@ -200,6 +201,18 @@ export function useGraph() {
     setShowClusters(false);
     setInfluenceSource(null);
     setInfluenceK(1);
+  }, []);
+
+  const changeToolMode = useCallback((mode) => {
+    setToolMode(mode);
+  
+    if (mode !== "select") {
+      setSelectedNode(null);
+    }
+  
+    if (mode !== "add-edge") {
+      setEdgeStart(null);
+    }
   }, []);
 
   const loadPreset = useCallback(
@@ -609,8 +622,9 @@ export function useGraph() {
     selectedNode,
     toolMode,
     edgeStart,
-    setToolMode,
+    changeToolMode,
     setSelectedNode,
+    clearSelectedNode,
     setEdgeStart,
     addNode,
     addEdge,
