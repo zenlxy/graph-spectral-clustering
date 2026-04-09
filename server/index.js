@@ -68,8 +68,8 @@ const quizSchema = {
             items: {
               type: Type.STRING,
             },
-            minItems: 4,
-            maxItems: 4,
+            minItems: 5,
+            maxItems: 5,
           },
           answer: {
             type: Type.STRING,
@@ -80,8 +80,8 @@ const quizSchema = {
         },
         required: ["question", "options", "answer", "explanation"],
       },
-      minItems: 4,
-      maxItems: 4,
+      minItems: 5,
+      maxItems: 5,
     },
   },
   required: ["questions"],
