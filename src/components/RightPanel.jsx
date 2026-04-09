@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import MatrixView from "./MatrixView";
 import { STEPS } from "../lib/constants";
 import { conceptText } from "../data/conceptText";
 import { getClusterColor } from "../hooks/useGraph";
+import { generateQuiz } from "../lib/quizApi";
 
 export default function RightPanel({
   activeStep,
@@ -20,12 +22,20 @@ export default function RightPanel({
   setShowClusters,
   nodeLabels,
   nodes,
+  edges,
   clusterMap,
   influenceSource,
   influenceK,
   setInfluenceK,
 }) {
+
   const content = conceptText[activeStep];
+
+  const [quiz, setQuiz] = useState(null);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [quizError, setQuizError] = useState("");
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [showQuizResults, setShowQuizResults] = useState(false);
 
   const eigenvectorLabels = eigenvalues.map((_, index) => `u${index + 1}`);
   const lambdaLabels = eigenvalues.map((_, index) => `λ${index + 1}`);
@@ -43,6 +53,122 @@ export default function RightPanel({
   influenceSource && clusterMap.has(influenceSource)
     ? getClusterColor(clusterMap.get(influenceSource))
     : "#14b8a6";
+
+  const fallbackQuiz = {
+    questions: [
+      {
+        question: "What does the number of zero eigenvalues of the Laplacian indicate?",
+        options: [
+          "The number of nodes",
+          "The number of connected components",
+          "The number of edges",
+          "The number of eigenvectors",
+        ],
+        answer: "The number of connected components",
+        explanation:
+          "For the graph Laplacian, the multiplicity of eigenvalue 0 equals the number of connected components.",
+      },
+      {
+        question: "What is the graph Laplacian?",
+        options: ["A + D", "D - A", "A - D", "A × D"],
+        answer: "D - A",
+        explanation:
+          "The Laplacian matrix is defined as the degree matrix minus the adjacency matrix.",
+      },
+      {
+        question: "What does a zero on the off-diagonal of the Laplacian indicate?",
+        options: [
+          "The two nodes are connected",
+          "The two nodes are not connected",
+          "The two nodes have the same degree",
+          "The graph is disconnected",
+        ],
+        answer: "The two nodes are not connected",
+        explanation:
+          "Off-diagonal entries of the Laplacian are -1 if an edge exists between nodes i and j, and 0 otherwise.",
+      },
+      {
+        question: "If a graph has 4 connected components, how many zero eigenvalues should its Laplacian have?",
+        options: ["1", "2", "4", "8"],
+        answer: "4",
+        explanation:
+          "The number of zero eigenvalues equals the number of connected components.",
+      },
+      {
+        question: "As k increases in Lᵏ influence, what generally happens?",
+        options: [
+          "Influence reaches nodes further away",
+          "The graph loses nodes",
+          "The Laplacian becomes diagonal",
+          "The number of clusters always increases",
+        ],
+        answer: "Influence reaches nodes further away",
+        explanation:
+          "Higher powers capture influence over longer paths in the graph.",
+      },
+    ],
+  };
+
+  useEffect(() => {
+    if (activeStep !== "Quiz") return;
+    if (quiz) return;
+  
+    const loadQuiz = async () => {
+      try {
+        setQuizLoading(true);
+        setQuizError("");
+  
+        const graphSummary = `
+        Nodes: ${nodes.map((n) => n.label).join(", ")}
+        Edges: ${edges.map((e) => {
+          const sourceNode = nodes.find((n) => n.id === e.source);
+          const targetNode = nodes.find((n) => n.id === e.target);
+          return `${sourceNode?.label}-${targetNode?.label}`;
+        }).join(", ")}
+        Connected components: ${clusterCount}
+        Zero eigenvalues: ${zeroEigenvalueCount}
+        Current source node for L^k influence: ${
+          nodes.find((n) => n.id === influenceSource)?.label ?? "None"
+        }
+        Current k for L^k influence: ${influenceK}
+        `.trim();
+  
+        const data = await generateQuiz(
+          "Graph Spectral Clustering",
+          graphSummary
+        );
+  
+        setQuiz(data);
+      } catch (error) {
+        console.error(error);
+        setQuiz(fallbackQuiz);
+        setQuizError("Using fallback quiz.");
+      } finally {
+        setQuizLoading(false);
+      }
+    };
+  
+    loadQuiz();
+  }, [
+    activeStep,
+    quiz,
+    nodes.length,
+    edges.length,
+    clusterCount,
+    zeroEigenvalueCount,
+  ]);
+
+  const totalQuestions = quiz?.questions?.length || 0;
+
+  const score = quiz
+    ? quiz.questions.reduce((acc, q, index) => {
+        return selectedAnswers[index] === q.answer ? acc + 1 : acc;
+      }, 0)
+    : 0;
+
+  const allAnswered =
+  quiz &&
+  quiz.questions.every((_, index) => selectedAnswers[index] !== undefined);
 
   return (
     <div className="right-panel-light">
@@ -218,7 +344,105 @@ export default function RightPanel({
           </>
         )}
 
-        <div className="nav-row">
+        {activeStep === "Quiz" && (
+          <div className="content-card">
+            <p>
+              💡 This quiz adapts to your graph. Modify the graph and regenerate quiz to explore new questions.
+            </p>
+
+            {quizLoading && <p>Generating quiz...</p>}
+
+            {quizError && (
+              <p>
+                <em>{quizError}</em>
+              </p>
+            )}
+
+            {!quizLoading &&
+              quiz &&
+              quiz.questions.map((q, qIndex) => (
+                <div key={qIndex} className="quiz-question-card">
+                  <p>
+                    <strong>
+                      {qIndex + 1}. {q.question}
+                    </strong>
+                  </p>
+
+                  <div className="quiz-options">
+                    {q.options.map((option) => {
+                      const isSelected = selectedAnswers[qIndex] === option;
+                      const isCorrect = showQuizResults && q.answer === option;
+                      const isWrong =
+                        showQuizResults && isSelected && q.answer !== option;
+
+                      return (
+                        <button
+                          key={option}
+                          className={`quiz-option-btn ${
+                            isSelected ? "selected" : ""
+                          } ${isCorrect ? "correct" : ""} ${
+                            isWrong ? "wrong" : ""
+                          }`}
+                          onClick={() =>
+                            setSelectedAnswers((prev) => ({
+                              ...prev,
+                              [qIndex]: option,
+                            }))
+                          }
+                          disabled={showQuizResults}
+                        >
+                          {option}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {showQuizResults && (
+                    <p className="quiz-explanation">
+                      <strong>Explanation:</strong> {q.explanation}
+                    </p>
+                  )}
+                </div>
+              ))}
+
+            {showQuizResults && (
+              <div className="quiz-score">
+                <strong>Score: {score} / {totalQuestions}</strong>
+              </div>
+            )}
+
+            {!quizLoading && quiz && (
+              <div className="quiz-actions">
+                <button
+                  className="secondary-btn"
+                  onClick={() => {
+                    setQuiz(null);
+                    setSelectedAnswers({});
+                    setShowQuizResults(false);
+                    setQuizError("");
+                  }}
+                >
+                  Regenerate Quiz
+                </button>
+                
+                <button
+                  className="primary-btn"
+                  onClick={() => {
+                    if (!allAnswered) {
+                      window.alert("Please answer all questions before checking your answers.");
+                      return;
+                    }
+                    setShowQuizResults(true);
+                  }}
+                >
+                  Check Answers
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+<div className="nav-row">
           {STEPS.indexOf(activeStep) > 0 ? (
             <button
               className="secondary-btn"
@@ -245,6 +469,7 @@ export default function RightPanel({
             </button>
           ) : null}
         </div>
+
       </div>
     </div>
   );

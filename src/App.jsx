@@ -132,6 +132,7 @@ export default function App() {
           setShowClusters={setShowClusters}
           nodeLabels={nodeLabels}
           nodes={nodes}
+          edges={edges}
           influenceSource={influenceSource}
           setInfluenceSource={setInfluenceSource}
           influenceK={influenceK}

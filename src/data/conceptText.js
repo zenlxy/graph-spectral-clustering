@@ -70,12 +70,8 @@ export const conceptText = {
   
     Quiz: {
       title: "Quiz",
-      body: "Test your understanding of graphs, matrices, clustering, and influence.",
-      bullets: [
-        "What does A represent?",
-        "Why is D diagonal?",
-        "What does a zero eigenvalue indicate?",
-      ],
+      body: "Test your understanding of graphs, matrices, clustering and influence.",
+      bullets: [],
       tryTitle: "Try it out",
       showTryCard: true,
     },

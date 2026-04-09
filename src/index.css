@@ -580,6 +580,72 @@
     font-weight: 700;
   }
 
+
+  .quiz-question-card {
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #ffffff;
+  }
+  
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .quiz-option-btn {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #0f172a;
+    padding: 10px 12px;
+    border-radius: 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  
+  .quiz-option-btn.selected {
+    border-color: #14b8a6;
+    background: #ecfeff;
+  }
+  
+  .quiz-option-btn.correct {
+    border-color: #22c55e;
+    background: #f0fdf4;
+  }
+  
+  .quiz-option-btn.wrong {
+    border-color: #ef4444;
+    background: #fef2f2;
+  }
+  
+.quiz-explanation {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background-color: #ecfdf5;  
+  color: #065f46;           
+  border-left: 4px solid #10b981;
+  border-radius: 8px;
+  font-size: 13px;
+}
+  
+  .quiz-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .quiz-score {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
   @media (max-width: 1200px) {
     .workspace {
       grid-template-columns: 1fr;
