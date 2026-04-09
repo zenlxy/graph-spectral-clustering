@@ -115,24 +115,6 @@ export default function GraphCanvas({
     return isActiveNode(nodeId) ? "#000000" : "#94a3b8";
   };
 
-  const padding = 80;
-
-  const viewBox = (() => {
-    if (!nodes.length) return "0 0 900 700"; // fallback
-
-    let minX = Infinity, maxX = -Infinity;
-    let minY = Infinity, maxY = -Infinity;
-
-    nodes.forEach((n) => {
-      if (n.x < minX) minX = n.x;
-      if (n.x > maxX) maxX = n.x;
-      if (n.y < minY) minY = n.y;
-      if (n.y > maxY) maxY = n.y;
-    });
-
-    return `${minX - padding} ${minY - padding} ${maxX - minX + padding * 2} ${maxY - minY + padding * 2}`;
-  })();
-
   return (
     <div className="graph-canvas-card">
       <svg

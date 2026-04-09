@@ -253,19 +253,19 @@ export function useGraph() {
 
           case "snowflake":
             setNodes([
-              { id: "n1", x: 420, y: 240, label: "1" },
-              { id: "n2", x: 420, y: 120, label: "2" },
-              { id: "n3", x: 560, y: 170, label: "3" },
-              { id: "n4", x: 560, y: 310, label: "4" },
-              { id: "n5", x: 420, y: 360, label: "5" },
-              { id: "n6", x: 280, y: 310, label: "6" },
-              { id: "n7", x: 280, y: 170, label: "7" },
-              { id: "n8", x: 420, y: 40, label: "8" },
-              { id: "n9", x: 680, y: 130, label: "9" },
-              { id: "n10", x: 680, y: 350, label: "10" },
-              { id: "n11", x: 420, y: 440, label: "11" },
-              { id: "n12", x: 160, y: 350, label: "12" },
-              { id: "n13", x: 160, y: 130, label: "13" },
+              { id: "n1", x: 420, y: 280, label: "1" },
+              { id: "n2", x: 420, y: 160, label: "2" },
+              { id: "n3", x: 560, y: 210, label: "3" },
+              { id: "n4", x: 560, y: 350, label: "4" },
+              { id: "n5", x: 420, y: 400, label: "5" },
+              { id: "n6", x: 280, y: 350, label: "6" },
+              { id: "n7", x: 280, y: 210, label: "7" },
+              { id: "n8", x: 420, y: 80, label: "8" },
+              { id: "n9", x: 680, y: 170, label: "9" },
+              { id: "n10", x: 680, y: 390, label: "10" },
+              { id: "n11", x: 420, y: 480, label: "11" },
+              { id: "n12", x: 160, y: 390, label: "12" },
+              { id: "n13", x: 160, y: 170, label: "13" },
             ]);
 
             setEdges([
@@ -288,61 +288,61 @@ export function useGraph() {
 
             case "four-clusters": {
               const clusterNodes = [
-                // cluster 1: 5 nodes (top-left) - dense
-                { id: "n1", x: 180, y: 110, label: "1" },
-                { id: "n2", x: 290, y: 190, label: "2" },
-                { id: "n3", x: 245, y: 310, label: "3" },
-                { id: "n4", x: 115, y: 310, label: "4" },
-                { id: "n5", x: 70, y: 190, label: "5" },
+                // cluster 1
+                { id: "n1", x: 200, y: 110, label: "1" },
+                { id: "n2", x: 310, y: 190, label: "2" },
+                { id: "n3", x: 265, y: 310, label: "3" },
+                { id: "n4", x: 135, y: 310, label: "4" },
+                { id: "n5", x: 90, y: 190, label: "5" },
+                { id: "n6", x: 200, y: 210, label: "6" }, 
             
-                // cluster 2: 4 nodes (top-right) - cycle
-                { id: "n6", x: 720, y: 110, label: "6" },
-                { id: "n7", x: 840, y: 210, label: "7" },
-                { id: "n8", x: 720, y: 310, label: "8" },
-                { id: "n9", x: 600, y: 210, label: "9" },
+                // cluster 2
+                { id: "n7", x: 720, y: 110, label: "7" },
+                { id: "n8", x: 840, y: 210, label: "8" },
+                { id: "n9", x: 720, y: 310, label: "9" },
+                { id: "n10", x: 600, y: 210, label: "10" },
             
-                // cluster 3: 3 nodes (bottom-left) - path
-                { id: "n10", x: 120, y: 560, label: "10" },
-                { id: "n11", x: 240, y: 640, label: "11" },
-                { id: "n12", x: 360, y: 560, label: "12" },
+                // cluster 3
+                { id: "n11", x: 120, y: 520, label: "11" },
+                { id: "n12", x: 240, y: 600, label: "12" },
+                { id: "n13", x: 360, y: 520, label: "13" },
             
-                // cluster 4: 6 nodes (bottom-right) - star-ish
-                { id: "n13", x: 720, y: 500, label: "13" },
-                { id: "n14", x: 840, y: 560, label: "14" },
-                { id: "n15", x: 800, y: 680, label: "15" },
-                { id: "n16", x: 640, y: 680, label: "16" },
-                { id: "n17", x: 600, y: 560, label: "17" },
-                { id: "n18", x: 720, y: 620, label: "18" },
+                // cluster 4
+                { id: "n14", x: 700, y: 450, label: "14" },
+                { id: "n15", x: 820, y: 510, label: "15" },
+                { id: "n16", x: 780, y: 630, label: "16" },
+                { id: "n17", x: 620, y: 630, label: "17" },
+                { id: "n18", x: 700, y: 570, label: "18" },
               ];
             
               const clusterEdges = [
-                // cluster 1: 5-node dense graph
+                // cluster 1 (star-ish, center n6)
+                { source: "n6", target: "n2" },
+                { source: "n6", target: "n3" },
+                { source: "n6", target: "n4" },
+                { source: "n6", target: "n5" },
                 { source: "n1", target: "n2" },
-                { source: "n2", target: "n3" },
-                { source: "n3", target: "n4" },
                 { source: "n4", target: "n5" },
-                { source: "n5", target: "n1" },
-                { source: "n1", target: "n3" },
-                { source: "n1", target: "n4" },
-                { source: "n2", target: "n5" },
             
-                // cluster 2: 4-node cycle
-                { source: "n6", target: "n7" },
+                // cluster 2 (cycle)
                 { source: "n7", target: "n8" },
                 { source: "n8", target: "n9" },
-                { source: "n9", target: "n6" },
+                { source: "n9", target: "n10" },
+                { source: "n10", target: "n7" },
             
-                // cluster 3: 3-node path
-                { source: "n10", target: "n11" },
+                // cluster 3 (path)
                 { source: "n11", target: "n12" },
+                { source: "n12", target: "n13" },
             
-                // cluster 4: 6-node star-ish graph centered at n18
-                { source: "n18", target: "n14" },
-                { source: "n18", target: "n15" },
-                { source: "n18", target: "n16" },
-                { source: "n18", target: "n17" },
-                { source: "n13", target: "n14" },
+                // cluster 4 (dense)
+                { source: "n14", target: "n15" },
+                { source: "n15", target: "n16" },
                 { source: "n16", target: "n17" },
+                { source: "n17", target: "n18" },
+                { source: "n18", target: "n14" },
+                { source: "n14", target: "n16" },
+                { source: "n14", target: "n17" },
+                { source: "n15", target: "n18" },
               ];
             
               setNodes(clusterNodes);
