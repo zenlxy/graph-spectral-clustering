@@ -37,14 +37,10 @@ AI:
 Frontend (Vercel):  
 🔗 https://graph-spectral-clustering.vercel.app
 
----
-
 ## ⚠️ Note on API Availability
 
 Quiz generation depends on the Google Gemini API.  
 Due to occasional high demand, the API may temporarily return errors (e.g. 503).
-
----
 
 ## 💻 Run Locally
 
@@ -76,8 +72,6 @@ npm run dev
 ```bash
 http://localhost:5173
 ```
-
----
 
 ## 🔐 Environment Variables
 
