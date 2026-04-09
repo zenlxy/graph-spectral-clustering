@@ -1,5 +1,6 @@
 :root {
     font-family: Inter, system-ui, sans-serif;
+    font-size: 14px;
     color: #0f172a;
     background: #f8fafc;
   }
@@ -27,7 +28,7 @@
   
   .app-shell-light {
     height: 100vh;
-    padding: 20px;
+    padding: 10px 30px 10px 15px;
     background: #f8fafc;
     display: flex;
     flex-direction: column;
@@ -38,8 +39,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 18px;
+    gap: 10px;
+    margin-bottom: 10px;
   }
   
   .brand {
@@ -50,7 +51,7 @@
 
   .brand h1 {
     margin: 0;
-    font-size: 1.85rem;
+    font-size: 1.5rem;
   }
   
   .workspace {
@@ -130,8 +131,8 @@
   }
   
   .toolbar-icon-btn {
-    width: 46px;
-    height: 46px;
+    width: 36px;
+    height: 36px;
     border: none;
     border-radius: 14px;
     background: #f1f5f9;
@@ -152,7 +153,6 @@
     color: white;
     box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.18);
   }
-
 
   .graph-canvas-card {
     position: relative;
@@ -213,7 +213,7 @@
     border: none;
     background: transparent;
     color: #475569;
-    padding: 10px 14px;
+    padding: 8px 12px;
     border-radius: 12px;
     font-weight: 700;
     white-space: nowrap;
@@ -333,6 +333,7 @@
 
   .matrix-wrapper {
     overflow-x: auto;
+    padding-top: 6px;
   }
   
   .matrix-table {
@@ -344,8 +345,8 @@
   .matrix-table th,
   .matrix-table td {
     text-align: center;
-    min-width: 34px;
-    padding: 8px;
+    min-width: 28px;
+    padding: 4px;
     border: 1px solid #e2e8f0;
     font-family: monospace;
     font-size: 0.95rem;
@@ -375,12 +376,12 @@
 
 .matrix-cell {
   position: relative;
-  overflow: visible;   /* allow tooltip to appear outside cell */
+  overflow: visible;   
 }
 
 .matrix-cell-text {
   display: block;
-  overflow: hidden;    /* clips the text so it doesn't spill into other cells */
+  overflow: hidden;   
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: default;
@@ -390,7 +391,7 @@
   content: attr(data-full-value);
   position: absolute;
   left: 50%;
-  top: -38px;
+  top: -32px;
   transform: translateX(-50%);
   background: #0f172a;
   color: #fff;
@@ -561,7 +562,6 @@
   
   .influence-slider-group input[type="range"] {
     width: 100%;
-    margin-top: 6px;
   }
 
   .matrix-cell-influence-row {

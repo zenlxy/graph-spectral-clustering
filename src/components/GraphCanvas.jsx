@@ -125,7 +125,7 @@ export default function GraphCanvas({
         onMouseUp={() => setDragging(null)}
         onMouseLeave={() => setDragging(null)}
         viewBox="0 0 900 700"
-        preserveAspectRatio="xMidYMin meet"
+        preserveAspectRatio="none"
       >
         <defs>
           <pattern id="light-grid" width="28" height="28" patternUnits="userSpaceOnUse">
