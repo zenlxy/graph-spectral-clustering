@@ -17,6 +17,37 @@ if (!process.env.GEMINI_API_KEY) {
   process.exit(1);
 }
 
+function sleep(ms) {
+return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function generateQuizWithRetry(ai, request, maxRetries = 3) {
+let lastError;
+
+for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+    return await ai.models.generateContent(request);
+    } catch (error) {
+    lastError = error;
+
+    const status = error?.status;
+    const isRetryable = status === 503 || status === 429;
+
+    if (!isRetryable || attempt === maxRetries) {
+        throw error;
+    }
+
+    const delay = attempt * 1500;
+    console.warn(
+        `Gemini request failed with status ${status}. Retrying in ${delay}ms...`
+    );
+    await sleep(delay);
+    }
+}
+
+throw lastError;
+}
+
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
@@ -103,14 +134,19 @@ Rules:
 - Return only valid JSON matching the schema.
 `.trim();
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: quizSchema,
-      },
-    });
+    const response = await generateQuizWithRetry(
+        ai,
+        {
+        model: "gemini-2.5-flash",
+        contents: prompt,
+        config: {
+            responseMimeType: "application/json",
+            responseSchema: quizSchema,
+            temperature: 0.6,
+        },
+        },
+        3
+    );
 
     const text = response.text;
 
